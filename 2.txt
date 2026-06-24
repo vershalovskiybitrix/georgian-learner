@@ -1,0 +1,162 @@
+Обоснованно раскритикуй, какие пороблемы в этом плане? (5-15 предложений)
+Plan: Georgian Language Learning Browser Extension
+Context
+Пользователь хочет браузерный плагин для пассивного изучения грузинского алфавита. Идея: в процессе обычного чтения часть латинских/кириллических букв заменяется на соответствующие грузинские — мозг постепенно привыкает к новым знакам без сознательного усилия.
+
+V1.0 — транслитерация. V2.0 — добавить перевод целых слов (архитектура должна это учитывать).
+
+Требования по итогам уточнений
+Исходные алфавиты: кириллица и латиница одновременно
+Визуальная подсветка: да, переключается в настройках
+Таблица соответствий: открывается как страница настроек расширения (options.html)
+Динамический контент: MutationObserver включён по умолчанию, но с переключателем в popup
+Технологии
+Слой	Решение	Почему
+Platform	WebExtension API / Manifest V3	Единый стандарт Chrome + Vivaldi, требование Chrome Web Store
+Language	Vanilla JS (ES2020 modules)	Нет сборщика = меньше точек отказа, легче аудит безопасности
+Storage	chrome.storage.sync	Настройки синхронизируются между устройствами
+DOM	TreeWalker + MutationObserver	Нативный API, нет зависимостей, высокая производительность
+Mappings	JSON-файлы в /data/mappings/	Читаемо, редактируемо без кода, расширяемо на другие языки
+Структура проекта
+plugin-georgian/
+├── manifest.json
+├── src/
+│   ├── content/
+│   │   ├── content.js        # entry point контент-скрипта
+│   │   ├── replacer.js       # ядро алгоритма замены
+│   │   ├── dom-walker.js     # обход DOM через TreeWalker
+│   │   └── observer.js       # обёртка MutationObserver
+│   ├── background/
+│   │   └── service-worker.js # маршрутизация сообщений, init
+│   ├── popup/
+│   │   ├── popup.html
+│   │   ├── popup.js
+│   │   └── popup.css
+│   └── options/
+│       ├── options.html      # страница настроек + таблица соответствий
+│       ├── options.js
+│       └── options.css
+├── data/
+│   └── mappings/
+│       ├── latin-georgian.json
+│       └── cyrillic-georgian.json
+└── icons/
+    ├── icon16.png
+    ├── icon48.png
+    └── icon128.png
+Формат таблицы соответствий (JSON)
+{
+  "version": "1.0",
+  "source": "latin",
+  "target": "georgian",
+  "description": "Latin to Georgian phonetic mapping",
+  "mappings": [
+    { "from": "kh", "to": "ხ", "priority": 10, "note": "aspirated k" },
+    { "from": "ts", "to": "ც", "priority": 10 },
+    { "from": "ch", "to": "ჩ", "priority": 10 },
+    { "from": "sh", "to": "შ", "priority": 10 },
+    { "from": "zh", "to": "ჟ", "priority": 10 },
+    { "from": "gh", "to": "ღ", "priority": 10 },
+    { "from": "dz", "to": "ძ", "priority": 10 },
+    { "from": "a",  "to": "ა", "priority": 1 },
+    { "from": "b",  "to": "ბ", "priority": 1 }
+  ]
+}
+Важно: priority определяет порядок разбора — мультисимвольные паттерны (kh, ts) имеют приоритет над односимвольными. Алгоритм всегда ищет наидлиннейшее совпадение (longest match first).
+
+Архитектура ядра замены (extensible для V2)
+ReplacementEngine
+├── interface ReplacementStrategy
+│     └── process(textNode, rate, settings) → void
+├── LetterReplacementStrategy   ← V1.0
+│     ├── load mappings (latin + cyrillic)
+│     ├── tokenize: longest-match scan
+│     ├── randomly select rate/1000 of candidates
+│     └── replace (text node или span если highlight)
+└── WordTranslationStrategy     ← V2.0 hook (заглушка)
+      └── fetch/lookup word → georgian equivalent
+content.js создаёт ReplacementEngine, передаёт ему активную стратегию. Смена стратегии — замена одного объекта.
+
+Алгоритм замены букв
+dom-walker.js обходит DOM через TreeWalker — только текстовые узлы
+Пропускаются теги: <script>, <style>, <code>, <pre>, <input>, <textarea>, <a> (URL не трогаем)
+Для каждого текстового узла replacer.js:
+Сканирует строку слева направо, ищет совпадения с таблицей (longest-match)
+Строит список кандидатов на замену (все найденные совпадения)
+Случайно выбирает rate/1000 долю кандидатов
+Если highlight выключен: заменяет прямо в textContent
+Если highlight включён: разбивает узел на части, заменённые оборачивает в <span class="geo-char" data-original="t" title="t">თ</span>
+observer.js через MutationObserver отслеживает новые узлы и прогоняет их через тот же pipeline
+Настройки (chrome.storage.sync)
+{
+  enabled: true,           // глобальный вкл/выкл
+  rate: 100,               // замен на 1000 букв (0–1000)
+  highlight: true,         // подсветка заменённых букв
+  observeDynamic: true,    // MutationObserver
+  activeMappings: ["latin-georgian", "cyrillic-georgian"]
+}
+Popup UI (popup.html)
+┌─────────────────────────────┐
+│  🇬🇪  Georgian Learner        │
+│  ─────────────────────────  │
+│  [●] Включено               │  ← большой toggle
+│                             │
+│  Замен на 1000 букв:        │
+│  [────────●────────] 150    │  ← slider + number input (синхронизированы)
+│                             │
+│  [●] Подсветка букв         │  ← toggle
+│  [●] Динамический контент   │  ← toggle
+│                             │
+│  [  Таблица соответствий  ] │  ← кнопка → options page
+└─────────────────────────────┘
+Options Page (options.html)
+Отображает таблицы latin-georgian и cyrillic-georgian в виде читаемой HTML-таблицы
+Поле <textarea> с raw JSON для ручного редактирования
+Кнопки Сохранить / Сбросить к умолчаниям / Скачать JSON / Загрузить JSON
+Валидация JSON перед сохранением
+manifest.json (Manifest V3 ключевые поля)
+{
+  "manifest_version": 3,
+  "permissions": ["storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": { "default_popup": "src/popup/popup.html" },
+  "background": { "service_worker": "src/background/service-worker.js" },
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["src/content/content.js"],
+    "run_at": "document_idle"
+  }],
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'"
+  }
+}
+Безопасность и стабильность
+Нет eval, нет inline-скриптов — соответствует CSP MV3
+Нет внешних запросов — таблицы бандлятся в расширение
+Защита от повторной обработки — узлы помечаются атрибутом data-geo-processed
+Дросселирование MutationObserver — батчинг через requestIdleCallback во избежание лагов
+Skip editable elements — contenteditable, input, textarea никогда не трогаются
+Шаги реализации
+Создать структуру проекта и manifest.json
+Заполнить latin-georgian.json и cyrillic-georgian.json (33 буквы + мультисимвольные паттерны)
+Написать dom-walker.js + replacer.js (ядро, покрывается unit-тестами)
+Написать observer.js
+Написать content.js (объединяет всё)
+Написать service-worker.js
+Написать popup.html/js/css
+Написать options.html/js/css
+Добавить иконки
+Тест в Chrome DevTools → упаковать в .zip → загрузить в chrome://extensions в режиме разработчика
+Верификация
+Загрузить chrome://extensions → режим разработчика → Load unpacked
+Открыть любую русскоязычную страницу → часть букв заменена на грузинские
+Открыть англоязычную страницу → то же
+Изменить ползунок → степень замены меняется без перезагрузки страницы
+Включить/выключить подсветку → грузинские буквы подчёркиваются/нет
+Открыть Twitter, прокрутить вниз → новые твиты тоже обрабатываются
+Открыть страницу настроек → таблица отображается, JSON редактируется, сохраняется
+Vivaldi: те же тесты (полная совместимость через WebExtension API)

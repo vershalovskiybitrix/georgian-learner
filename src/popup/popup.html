@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Georgian Learner</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+
+    <div class="header">
+      <div class="title-block">
+        <span class="logo">ა</span>
+        <span class="title">Georgian Learner</span>
+      </div>
+      <label class="toggle" title="Включить / выключить">
+        <input type="checkbox" id="enabled">
+        <span class="track"><span class="thumb"></span></span>
+      </label>
+    </div>
+
+    <div class="body" id="body">
+
+      <div class="field">
+        <label class="field-label">Замен на 1000 букв</label>
+        <div class="rate-row">
+          <input type="range"  id="rate-slider" min="0" max="1000" step="1" value="3">
+          <input type="number" id="rate-num"    min="0" max="1000" value="3">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="match-mode">Приоритет комбинаций</label>
+        <select id="match-mode">
+          <option value="equal">Равный (только отдельные буквы)</option>
+          <option value="boosted" selected>Усиленный (рекомендуется)</option>
+          <option value="longest">Максимальный (всегда длинные)</option>
+        </select>
+      </div>
+
+      <div class="field row-between">
+        <label class="field-label" for="highlight">Подсветка букв</label>
+        <label class="toggle-sm">
+          <input type="checkbox" id="highlight">
+          <span class="track"><span class="thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="field row-between">
+        <label class="field-label" for="observe-dynamic">Динамический контент</label>
+        <label class="toggle-sm">
+          <input type="checkbox" id="observe-dynamic">
+          <span class="track"><span class="thumb"></span></span>
+        </label>
+      </div>
+
+      <div class="divider"></div>
+
+      <button id="open-options">Таблица соответствий и домены →</button>
+
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

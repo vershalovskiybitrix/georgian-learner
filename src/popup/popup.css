@@ -1,0 +1,144 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #1e1e2e;
+  --bg2:       #2a2a3d;
+  --accent:    #6c8ebf;
+  --accent2:   #89b4fa;
+  --text:      #cdd6f4;
+  --text-dim:  #7f849c;
+  --border:    #313244;
+  --radius:    8px;
+  --on:        #a6e3a1;
+}
+
+body {
+  width: 290px;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.popup { display: flex; flex-direction: column; }
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.title-block { display: flex; align-items: center; gap: 8px; }
+
+.logo {
+  font-size: 22px;
+  line-height: 1;
+  font-family: 'Sylfaen', 'Noto Serif Georgian', serif;
+}
+
+.title { font-size: 14px; font-weight: 600; letter-spacing: .3px; }
+
+/* ── Body ── */
+.body { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px 14px; }
+.body.disabled { opacity: .45; pointer-events: none; }
+
+/* ── Fields ── */
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field-label { font-size: 12px; color: var(--text-dim); }
+
+.row-between { flex-direction: row; align-items: center; justify-content: space-between; }
+.row-between .field-label { color: var(--text); }
+
+/* ── Rate row ── */
+.rate-row { display: flex; align-items: center; gap: 8px; }
+
+input[type=range] {
+  flex: 1;
+  height: 4px;
+  accent-color: var(--accent2);
+  cursor: pointer;
+}
+
+input[type=number] {
+  width: 52px;
+  padding: 3px 6px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-size: 13px;
+  text-align: center;
+}
+input[type=number]:focus { outline: none; border-color: var(--accent); }
+
+/* ── Select ── */
+select {
+  width: 100%;
+  padding: 5px 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+select:focus { outline: none; border-color: var(--accent); }
+
+/* ── Toggle ── */
+.toggle, .toggle-sm { display: inline-flex; align-items: center; cursor: pointer; flex-shrink: 0; }
+
+.toggle .track {
+  position: relative;
+  width: 40px; height: 22px;
+  background: var(--border);
+  border-radius: 11px;
+  transition: background .2s;
+}
+.toggle-sm .track {
+  position: relative;
+  width: 32px; height: 18px;
+  background: var(--border);
+  border-radius: 9px;
+  transition: background .2s;
+}
+
+.track .thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  background: var(--text-dim);
+  border-radius: 50%;
+  transition: transform .2s, background .2s;
+}
+.toggle .track .thumb   { width: 16px; height: 16px; }
+.toggle-sm .track .thumb { width: 12px; height: 12px; }
+
+.toggle input,
+.toggle-sm input { position: absolute; opacity: 0; width: 0; height: 0; }
+
+.toggle input:checked ~ .track,
+.toggle-sm input:checked ~ .track { background: var(--on); }
+
+.toggle .track .thumb   { }
+.toggle input:checked ~ .track .thumb   { transform: translateX(18px); background: #fff; }
+.toggle-sm input:checked ~ .track .thumb { transform: translateX(14px); background: #fff; }
+
+/* ── Divider ── */
+.divider { height: 1px; background: var(--border); }
+
+/* ── Options button ── */
+button#open-options {
+  width: 100%;
+  padding: 7px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--accent2);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .15s;
+}
+button#open-options:hover { border-color: var(--accent2); }

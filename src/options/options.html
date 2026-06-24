@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Georgian Learner — Настройки</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="page">
+
+    <h1>Georgian Learner — Настройки</h1>
+
+    <!-- ── Mapping tables ─────────────────────────────── -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Таблица соответствий</h2>
+        <div class="tabs" id="map-tabs">
+          <!-- Populated by JS from mapping file "name" fields -->
+        </div>
+      </div>
+
+      <p class="hint">
+        <b>From</b> — исходный символ или сочетание&nbsp;&nbsp;·&nbsp;&nbsp;
+        <b>To</b> — грузинский символ (один или несколько из диапазона ა–ჿ)
+      </p>
+
+      <div class="table-wrap">
+        <table id="map-table">
+          <thead>
+            <tr><th>From</th><th>To</th><th></th></tr>
+          </thead>
+          <tbody id="map-body">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="row-actions">
+        <button id="add-row" class="btn-secondary">+ Добавить строку</button>
+      </div>
+
+      <div class="card-footer">
+        <div class="btn-group">
+          <button id="save-map"    class="btn-primary">Сохранить</button>
+          <button id="export-map"  class="btn-secondary">Скачать JSON</button>
+          <button id="import-map"  class="btn-secondary">Загрузить JSON</button>
+          <input  id="import-file" type="file" accept=".json" style="display:none">
+          <button id="reset-map"   class="btn-danger">Сбросить к стандартным</button>
+        </div>
+        <span id="save-status" class="save-status"></span>
+      </div>
+    </section>
+
+    <!-- ── Domain list ────────────────────────────────── -->
+    <section class="card">
+      <div class="card-header">
+        <h2>Домены</h2>
+        <div class="toggle-row">
+          <span id="list-mode-label">Чёрный список</span>
+          <label class="toggle-sm">
+            <input type="checkbox" id="list-mode-toggle">
+            <span class="track"><span class="thumb"></span></span>
+          </label>
+          <span>Белый список</span>
+        </div>
+      </div>
+
+      <p class="hint">
+        Режим <b>чёрного списка</b>: плагин работает везде, кроме указанных сайтов.<br>
+        Режим <b>белого списка</b>: плагин работает только на указанных сайтах.<br>
+        Один домен на строке.
+      </p>
+
+      <textarea id="domain-list" rows="7" spellcheck="false"></textarea>
+
+      <div class="card-footer">
+        <button id="save-domains" class="btn-primary">Сохранить домены</button>
+        <span id="domain-status" class="save-status"></span>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Confirm dialog (reset) -->
+  <div id="overlay" class="overlay hidden">
+    <div class="dialog">
+      <p>Сбросить таблицу соответствий к стандартным значениям?<br>
+         <small>Все ваши изменения будут удалены.</small></p>
+      <div class="dialog-btns">
+        <button id="confirm-reset" class="btn-danger">Сбросить</button>
+        <button id="cancel-reset"  class="btn-secondary">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
