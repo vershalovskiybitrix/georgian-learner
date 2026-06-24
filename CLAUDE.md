@@ -14,7 +14,7 @@
 - **Vanilla JS** (ES2020, без сборщика) — нет зависимостей
 - **chrome.storage.sync** — настройки пользователя
 - **chrome.storage.local** — кастомные таблицы маппингов
-- DOM: **TreeWalker** (whitelist родительских элементов) + **MutationObserver** (childList)
+- DOM: **TreeWalker** (blocklist тегов + interactive-guard) + **MutationObserver** (childList)
 
 ## Структура проекта
 
@@ -41,14 +41,18 @@ georgian-learner/
 
 ## Ключевые архитектурные решения
 
-### DOM-обход: whitelist родителей
-Обрабатываем текстовые узлы **только** внутри: `p`, `h1–h6`, `li`, `td`, `th`, `blockquote`, `figcaption`, `cite`, `article`, `section`, `main`.
-Всё остальное не трогаем — лучше пропустить, чем сломать интерфейс.
+### DOM-обход: blocklist + interactive-guard
+Обрабатываем текстовые узлы в любом элементе, **кроме**:
+- Тегов из `SKIP_PARENTS` (не содержат читаемого текста): `SCRIPT`, `STYLE`, `NOSCRIPT`, `TITLE`, `META`, `IFRAME`, `FRAME`, `FRAMESET`, `NOFRAMES`, `EMBED`, `OBJECT`, `CANVAS`, `SVG`, `MATH`, `TEMPLATE`.
+- Узлов внутри интерактивных контейнеров (`isInsideInteractive`, до 8 уровней вверх): теги `A`, `BUTTON`, `NAV`, `HEADER`, `FOOTER`, `MENU` и ARIA-роли `navigation`, `button`, `menuitem`, `menubar`, `tab`, `tablist`, `toolbar`, `banner`.
+
+Подход blocklist надёжнее, чем перечислять все возможные контентные контейнеры — лучше пропустить лишнее, чем сломать интерфейс.
 
 Дополнительно пропускаем:
-- Узлы с `aria-hidden="true"` или `role="img"` на родителе
-- Элементы с `contenteditable`
-- Узлы, уже помеченные `data-geo-processed`
+- Родитель с `aria-hidden="true"`
+- Элементы с `contenteditable` (`isContentEditable`)
+- Собственные вставленные спаны `.geo-char`
+- Блочные родители, уже помеченные `data-geo-done` (стампятся только блочные теги — `P`, `H1–H6`, `LI`, `TD`, `TH`, `BLOCKQUOTE`, `FIGCAPTION`, `CITE`, `DT`, `DD` — чтобы не блокировать ре-рендеры SPA в `div`/`span`)
 
 ### Таблицы маппингов (JSON)
 Файл `latin-georgian.json` — поле `name` (название вкладки), массив `mappings` с полями `from` / `to`.
@@ -79,14 +83,14 @@ ReplacementEngine → ReplacementStrategy.process(textNode, settings)
 ## Известные ограничения V1.0
 
 - **Коллизии транслитерации**: `sh` в `mishap` и `sh` в `ship` — одинаково заменяются на `შ`. Лингвистический анализ не реализован. Это осознанный компромисс для V1.
-- **Иконочные шрифты**: Material Icons и подобные могут частично пострадать на сайтах, не использующих `aria-hidden`. Whitelist родителей снижает риск.
+- **Иконочные шрифты**: Material Icons и подобные могут частично пострадать на сайтах, не использующих `aria-hidden`. Interactive-guard и blocklist тегов снижают риск.
 - **`<all_urls>`**: на некоторых защищённых страницах контент-скрипт может быть заблокирован браузером — ожидаемое поведение.
 
 ## Безопасность
 
 - Нет `eval`, нет inline-скриптов (CSP MV3)
 - Нет внешних сетевых запросов в V1
-- Валидация маппингов: `from` — строка из ASCII/кириллицы, `to` — один символ U+10D0–U+10FF
+- Валидация маппингов (`options.js`): `to` — один или несколько символов из диапазона U+10D0–U+10FF (`/^[ა-ჿ]+$/`), оба поля непустые. Поле `from` на формат не проверяется (используется только для текстового сравнения, в DOM не вставляется) — известное ограничение V1.
 
 ## Разработка и тест
 
