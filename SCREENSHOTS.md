@@ -112,7 +112,7 @@ Shows all popup settings at once (if possible to fit).
 
 Place all screenshots in a folder:
 ```
-plugin-georgian/
+georgian-learner/
 ├── screenshots/
 │   ├── popup-preview.png          (1280×800)
 │   ├── options-table.png          (1280×1024)

@@ -19,21 +19,24 @@
 ## Структура проекта
 
 ```
-plugin-georgian/
-├── manifest.json
-├── src/
-│   ├── content.js            # Единый контент-скрипт
-│   ├── background/
-│   │   └── service-worker.js
-│   ├── popup/
-│   │   ├── popup.html / .js / .css
-│   └── options/
-│       ├── options.html / .js / .css
-├── data/
-│   └── mappings/
-│       ├── latin-georgian.json
-│       └── cyrillic-georgian.json
-└── icons/
+georgian-learner/
+├── extension/                    # загружаемый/упаковываемый плагин (Load unpacked / ZIP)
+│   ├── manifest.json
+│   ├── src/
+│   │   ├── content.js            # Единый контент-скрипт
+│   │   ├── background/
+│   │   │   └── service-worker.js
+│   │   ├── popup/
+│   │   │   ├── popup.html / .js / .css
+│   │   └── options/
+│   │       ├── options.html / .js / .css
+│   ├── data/
+│   │   └── mappings/
+│   │       ├── latin-georgian.json
+│   │       └── cyrillic-georgian.json
+│   └── icons/
+├── archive/                      # черновики планирования
+└── *.md                          # README, PRIVACY, PUBLISH, ROADMAP, SCREENSHOTS
 ```
 
 ## Ключевые архитектурные решения
@@ -88,7 +91,7 @@ ReplacementEngine → ReplacementStrategy.process(textNode, settings)
 ## Разработка и тест
 
 ```
-chrome://extensions → Developer mode → Load unpacked → plugin-georgian/
+chrome://extensions → Developer mode → Load unpacked → extension/
 ```
 
 Тест на Vivaldi идентичен — полная совместимость через WebExtension API.

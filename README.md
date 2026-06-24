@@ -35,11 +35,11 @@ Instead of traditional memorization, **Georgian Learner** uses spaced repetition
 
 ### Chrome or Vivaldi (Developer Mode)
 
-1. [Download](https://github.com/your-repo/releases) the extension as a ZIP file
-2. Unzip it anywhere (`plugin-georgian/`)
+1. [Download](https://github.com/vershalovskiybitrix/georgian-learner/releases) the extension as a ZIP file
+2. Unzip it anywhere
 3. Open `chrome://extensions/` (Chrome) or `vivaldi://extensions/` (Vivaldi)
 4. Enable **Developer mode** (top-right toggle)
-5. Click **Load unpacked** and select the `plugin-georgian/` folder
+5. Click **Load unpacked** and select the `extension/` folder
 6. Done! The icon appears in your toolbar
 
 ### Chrome Web Store (Coming Soon)
@@ -94,40 +94,43 @@ Works on virtually any website with readable text:
 
 ### Project Structure
 ```
-plugin-georgian/
-├── manifest.json           # Extension configuration
-├── src/
-│   ├── content.js          # Core replacement engine
-│   ├── background/
-│   │   └── service-worker.js
-│   ├── popup/
-│   │   ├── popup.html
-│   │   ├── popup.js
-│   │   └── popup.css
-│   └── options/
-│       ├── options.html
-│       ├── options.js
-│       └── options.css
-├── data/
-│   └── mappings/
-│       ├── latin-georgian.json
-│       └── cyrillic-georgian.json
-└── icons/
-    ├── icon16.png
-    ├── icon48.png
-    └── icon128.png
+georgian-learner/
+├── extension/                  # ← loadable / packable extension (Load unpacked / ZIP)
+│   ├── manifest.json           # Extension configuration
+│   ├── src/
+│   │   ├── content.js          # Core replacement engine
+│   │   ├── background/
+│   │   │   └── service-worker.js
+│   │   ├── popup/
+│   │   │   ├── popup.html
+│   │   │   ├── popup.js
+│   │   │   └── popup.css
+│   │   └── options/
+│   │       ├── options.html
+│   │       ├── options.js
+│   │       └── options.css
+│   ├── data/
+│   │   └── mappings/
+│   │       ├── latin-georgian.json
+│   │       └── cyrillic-georgian.json
+│   └── icons/
+│       ├── icon16.png
+│       ├── icon48.png
+│       └── icon128.png
+├── archive/                    # planning drafts (kept for history)
+└── *.md                        # README, PRIVACY, PUBLISH, ROADMAP, SCREENSHOTS
 ```
 
 ### Building from Source
 
 1. Clone the repository
 2. Open `chrome://extensions/` → Enable Developer mode
-3. Click **Load unpacked** → Select this folder
+3. Click **Load unpacked** → Select the `extension/` folder
 4. Changes to JS/CSS are auto-loaded; reload the page to see changes
 
 ### Modifying Mappings
 
-Edit `data/mappings/latin-georgian.json`:
+Edit `extension/data/mappings/latin-georgian.json`:
 ```json
 {
   "version": "1.0",

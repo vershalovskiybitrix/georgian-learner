@@ -31,7 +31,7 @@ Before publishing anywhere:
 ### Publishing Steps
 
 2. **Click "Create new item"**
-   - Select the `plugin-georgian.zip` file (created by zipping the entire `plugin-georgian/` folder)
+   - Select the `georgian-learner.zip` file (created by zipping the **contents** of the `extension/` folder, so that `manifest.json` sits at the ZIP root)
    - Upload
 
 3. **Fill in Store Listing**
@@ -104,7 +104,7 @@ Before publishing anywhere:
 
 2. **Submit Extension**
    - Dashboard → "New Extension"
-   - Upload `plugin-georgian.zip`
+   - Upload `georgian-learner.zip`
 
 3. **Fill Metadata**
    - Title, description, category (same as Chrome Web Store)
@@ -127,17 +127,8 @@ Before publishing anywhere:
 
 Fastest way to share with tech-savvy users:
 
-1. **Create GitHub Repository**
-   ```
-   mkdir plugin-georgian-release
-   cd plugin-georgian-release
-   git init
-   git add .
-   git commit -m "Initial release v1.0.0"
-   git branch -M main
-   git remote add origin https://github.com/YOUR-USERNAME/plugin-georgian.git
-   git push -u origin main
-   ```
+1. **GitHub Repository**
+   Already published at https://github.com/vershalovskiybitrix/georgian-learner
 
 2. **Create Release**
    - Go to your GitHub repo → **Releases** → **Create new release**
@@ -147,7 +138,7 @@ Fastest way to share with tech-savvy users:
      ```
      ### Installation
      
-     1. Download `plugin-georgian.zip` below
+     1. Download `georgian-learner.zip` below
      2. Unzip anywhere
      3. Open `chrome://extensions/` (Chrome) or `vivaldi://extensions/` (Vivaldi)
      4. Enable Developer Mode (top-right)
@@ -160,11 +151,11 @@ Fastest way to share with tech-savvy users:
      - Works on any website
      - No tracking, fully local
      ```
-   - Attach `plugin-georgian.zip` as a release asset
+   - Attach `georgian-learner.zip` as a release asset
    - Publish
 
 3. **Share**
-   - Link: `https://github.com/YOUR-USERNAME/plugin-georgian/releases/tag/v1.0.0`
+   - Link: `https://github.com/vershalovskiybitrix/georgian-learner/releases/tag/v1.0.0`
    - Include in README.md and your website
 
 ---
@@ -187,7 +178,7 @@ Add to your website:
       📥 Vivaldi Extensions
     </a>
     
-    <a href="https://github.com/YOUR-USERNAME/plugin-georgian/releases/download/v1.0.0/plugin-georgian.zip" class="btn btn-github">
+    <a href="https://github.com/vershalovskiybitrix/georgian-learner/releases/download/v1.0.0/georgian-learner.zip" class="btn btn-github">
       📥 GitHub Release (Manual Install)
     </a>
   </div>
