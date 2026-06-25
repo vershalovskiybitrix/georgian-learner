@@ -56,18 +56,7 @@
   // ── Config & mappings ──────────────────────────────────────────────────────
 
   async function loadConfig() {
-    return getSync({
-      enabled:        true,
-      rate:           3,
-      highlight:      true,
-      observeDynamic: true,
-      matchMode:      'boosted',
-      listMode:       'blacklist',
-      domainList: [
-        'docs.google.com', 'sheets.google.com', 'slides.google.com',
-        'mail.google.com', 'github.com', 'gitlab.com'
-      ]
-    });
+    return getSync(GEO_DEFAULTS); // GEO_DEFAULTS from shared/defaults.js (loaded first)
   }
 
   async function loadMappings() {

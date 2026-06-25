@@ -1,12 +1,7 @@
 'use strict';
 
-const DEFAULTS = {
-  enabled:        true,
-  rate:           3,
-  highlight:      true,
-  observeDynamic: true,
-  matchMode:      'boosted'
-};
+// GEO_DEFAULTS from shared/defaults.js (loaded first). The popup only reads the
+// subset it shows; extra keys (listMode/domainList) are harmless as get() defaults.
 
 function applySettings(s) {
   document.getElementById('enabled').checked         = s.enabled;
@@ -23,7 +18,7 @@ function save(key, value) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  chrome.storage.sync.get(DEFAULTS, applySettings);
+  chrome.storage.sync.get(GEO_DEFAULTS, applySettings);
 
   document.getElementById('enabled').addEventListener('change', e => {
     const on = e.target.checked;
