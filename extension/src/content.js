@@ -43,24 +43,16 @@
   let sortedMappings = [];
   let singleMappings = [];
 
-  // ── Storage helpers ────────────────────────────────────────────────────────
-
-  function getSync(defaults) {
-    return new Promise(r => chrome.storage.sync.get(defaults, r));
-  }
-
-  function getLocal(keys) {
-    return new Promise(r => chrome.storage.local.get(keys, r));
-  }
-
   // ── Config & mappings ──────────────────────────────────────────────────────
+  // geoStore (shared/storage.js) and GEO_DEFAULTS (shared/defaults.js) are loaded
+  // before this script via the manifest content_scripts list.
 
   async function loadConfig() {
-    return getSync(GEO_DEFAULTS); // GEO_DEFAULTS from shared/defaults.js (loaded first)
+    return geoStore.syncGet(GEO_DEFAULTS);
   }
 
   async function loadMappings() {
-    const stored = await getLocal(['customLatin', 'customCyrillic']);
+    const stored = await geoStore.localGet(['customLatin', 'customCyrillic']);
 
     const fetchDefault = name =>
       fetch(chrome.runtime.getURL(`data/mappings/${name}`)).then(r => r.json());

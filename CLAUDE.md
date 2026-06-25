@@ -24,6 +24,9 @@ georgian-learner/
 │   ├── manifest.json
 │   ├── src/
 │   │   ├── content.js            # Единый контент-скрипт
+│   │   ├── shared/              # общий код для всех контекстов
+│   │   │   ├── defaults.js       # GEO_DEFAULTS — единые дефолтные настройки
+│   │   │   └── storage.js        # geoStore — промис-обёртки над chrome.storage
 │   │   ├── background/
 │   │   │   └── service-worker.js
 │   │   ├── popup/

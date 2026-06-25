@@ -99,6 +99,9 @@ georgian-learner/
 │   ├── manifest.json           # Extension configuration
 │   ├── src/
 │   │   ├── content.js          # Core replacement engine
+│   │   ├── shared/             # shared across contexts
+│   │   │   ├── defaults.js     # GEO_DEFAULTS — default settings (single source)
+│   │   │   └── storage.js      # geoStore — chrome.storage promise wrappers
 │   │   ├── background/
 │   │   │   └── service-worker.js
 │   │   ├── popup/

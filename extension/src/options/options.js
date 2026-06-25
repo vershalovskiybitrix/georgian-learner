@@ -10,12 +10,9 @@ let defaultData = [null, null]; // loaded from bundled JSON files
 let activeTab   = 0;            // index into MAPPING_FILES
 
 // ── Storage helpers ────────────────────────────────────────────────────────
+// Promise wrappers come from shared/storage.js (loaded before this script).
 
-function syncGet(keys)    { return new Promise(r => chrome.storage.sync.get(keys, r)); }
-function syncSet(obj)     { return new Promise(r => chrome.storage.sync.set(obj, r)); }
-function localGet(keys)   { return new Promise(r => chrome.storage.local.get(keys, r)); }
-function localSet(obj)    { return new Promise(r => chrome.storage.local.set(obj, r)); }
-function localRemove(key) { return new Promise(r => chrome.storage.local.remove(key, r)); }
+const { syncGet, syncSet, localGet, localSet, localRemove } = geoStore;
 
 // ── Default JSON fetch ─────────────────────────────────────────────────────
 
