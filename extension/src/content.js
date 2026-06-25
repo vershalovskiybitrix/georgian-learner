@@ -26,6 +26,11 @@
 
   const DONE_ATTR = 'data-geo-done';
 
+  // Tunables.
+  const MAX_ANCESTOR_DEPTH   = 8;    // how far isInsideInteractive walks up the DOM
+  const OBSERVER_DEBOUNCE_MS = 250;  // batch dynamic-content scans
+  const INITIAL_SCAN_DELAY_MS = 1000; // let the page settle before the first scan
+
   // WeakSet tracks individual text node objects already processed.
   // When React/Vue removes and recreates DOM nodes, the new objects are not
   // in the set and will be processed again — exactly what we want.
@@ -85,7 +90,7 @@
   function isInsideInteractive(el) {
     let cur   = el;
     let depth = 0;
-    while (cur && cur !== document.body && depth < 8) {
+    while (cur && cur !== document.body && depth < MAX_ANCESTOR_DEPTH) {
       if (INTERACTIVE_TAGS.has(cur.tagName)) return true;
       const role = cur.getAttribute('role');
       if (role && INTERACTIVE_ROLES.has(role)) return true;
@@ -249,7 +254,7 @@
           pending.push(added);
         }
       }
-      if (pending.length && !timer) timer = setTimeout(flush, 250);
+      if (pending.length && !timer) timer = setTimeout(flush, OBSERVER_DEBOUNCE_MS);
     });
 
     obs.observe(document.body, { childList: true, subtree: true });
@@ -274,7 +279,7 @@
     await loadMappings();
 
     injectStyle();
-    setTimeout(() => scanRoot(document.body), 1000);
+    setTimeout(() => scanRoot(document.body), INITIAL_SCAN_DELAY_MS);
     setupObserver();
   }
 

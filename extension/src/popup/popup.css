@@ -121,7 +121,6 @@ select:focus { outline: none; border-color: var(--accent); }
 .toggle input:checked ~ .track,
 .toggle-sm input:checked ~ .track { background: var(--on); }
 
-.toggle .track .thumb   { }
 .toggle input:checked ~ .track .thumb   { transform: translateX(18px); background: #fff; }
 .toggle-sm input:checked ~ .track .thumb { transform: translateX(14px); background: #fff; }
 
