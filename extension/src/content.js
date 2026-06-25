@@ -52,17 +52,18 @@
   }
 
   async function loadMappings() {
-    const stored = await geoStore.localGet(['customLatin', 'customCyrillic']);
+    const stored = await geoStore.localGet(GEO_MAPPING_SOURCES.map(s => s.key));
 
-    const fetchDefault = name =>
-      fetch(chrome.runtime.getURL(`data/mappings/${name}`)).then(r => r.json());
+    const fetchDefault = file =>
+      fetch(chrome.runtime.getURL(`data/mappings/${file}`)).then(r => r.json());
 
-    const [latinData, cyrData] = await Promise.all([
-      stored.customLatin    ? Promise.resolve(stored.customLatin)    : fetchDefault('latin-georgian.json'),
-      stored.customCyrillic ? Promise.resolve(stored.customCyrillic) : fetchDefault('cyrillic-georgian.json')
-    ]);
+    const datasets = await Promise.all(
+      GEO_MAPPING_SOURCES.map(s =>
+        stored[s.key] ? Promise.resolve(stored[s.key]) : fetchDefault(s.file)
+      )
+    );
 
-    const all = [...latinData.mappings, ...cyrData.mappings];
+    const all = datasets.flatMap(d => d.mappings);
     all.sort((a, b) => b.from.length - a.from.length);
 
     sortedMappings = all;

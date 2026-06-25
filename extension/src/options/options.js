@@ -2,8 +2,9 @@
 
 // ── State ──────────────────────────────────────────────────────────────────
 
-const MAPPING_FILES = ['latin-georgian.json', 'cyrillic-georgian.json'];
-const STORAGE_KEYS  = ['customLatin', 'customCyrillic'];
+// Derived from GEO_MAPPING_SOURCES (shared/defaults.js) — single source of truth.
+const MAPPING_FILES = GEO_MAPPING_SOURCES.map(s => s.file);
+const STORAGE_KEYS  = GEO_MAPPING_SOURCES.map(s => s.key);
 const SOFT_LIMIT    = 10 * 1024; // 10 KB
 
 let defaultData = [null, null]; // loaded from bundled JSON files

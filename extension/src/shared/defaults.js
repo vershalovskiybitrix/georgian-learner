@@ -20,3 +20,11 @@ self.GEO_DEFAULTS = {
     'gitlab.com'
   ]
 };
+
+// Single source of truth pairing each bundled mapping file with the
+// chrome.storage.local key that holds the user's customised version of it.
+// Both the content script and the options page derive from this list.
+self.GEO_MAPPING_SOURCES = [
+  { key: 'customLatin',    file: 'latin-georgian.json' },
+  { key: 'customCyrillic', file: 'cyrillic-georgian.json' }
+];
