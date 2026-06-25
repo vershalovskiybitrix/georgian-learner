@@ -242,22 +242,32 @@
   function setupObserver() {
     if (!cfg.observeDynamic) return;
 
+    // Accumulate added nodes across callbacks; debounce the scan. Collecting into
+    // a persistent queue (instead of closing over a single `mutations` batch) is
+    // essential: several observer callbacks can fire within the debounce window,
+    // and capturing only the last batch would silently drop the earlier ones.
     let timer = null;
+    const pending = [];
+
+    const flush = () => {
+      timer = null;
+      const nodes = pending.splice(0);
+      for (const node of nodes) scanRoot(node);
+    };
+
     const obs = new MutationObserver(mutations => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        for (const mut of mutations) {
-          for (const added of mut.addedNodes) {
-            if (added.nodeType !== Node.ELEMENT_NODE) continue;
-            if (added.classList && added.classList.contains('geo-char')) continue;
-            const par = added.parentElement;
-            // Only honour DONE_ATTR for block-level parents — span parents are
-            // not stamped, so their children must always be re-checked.
-            if (par && par.hasAttribute(DONE_ATTR) && BLOCK_SAFE.has(par.tagName)) continue;
-            scanRoot(added);
-          }
+      for (const mut of mutations) {
+        for (const added of mut.addedNodes) {
+          if (added.nodeType !== Node.ELEMENT_NODE) continue;
+          if (added.classList && added.classList.contains('geo-char')) continue;
+          const par = added.parentElement;
+          // Only honour DONE_ATTR for block-level parents — span parents are
+          // not stamped, so their children must always be re-checked.
+          if (par && par.hasAttribute(DONE_ATTR) && BLOCK_SAFE.has(par.tagName)) continue;
+          pending.push(added);
         }
-      }, 250);
+      }
+      if (pending.length && !timer) timer = setTimeout(flush, 250);
     });
 
     obs.observe(document.body, { childList: true, subtree: true });

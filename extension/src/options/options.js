@@ -62,7 +62,9 @@ function readTable() {
   const rows = document.querySelectorAll('#map-body tr');
   const mappings = [];
   for (const row of rows) {
-    const from = row.cells[0].textContent.trim();
+    // content.js matches against text.toLowerCase(), so an upper-case "from"
+    // would never match. Normalise here so user-entered rows actually work.
+    const from = row.cells[0].textContent.trim().toLowerCase();
     const to   = row.cells[1].textContent.trim();
     if (from && to) mappings.push({ from, to });
   }
