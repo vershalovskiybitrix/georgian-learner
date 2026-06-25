@@ -191,6 +191,10 @@ async function handleImportFile(e) {
     return;
   }
 
+  // Normalise 'from' to lower-case (content.js matches against lowercased text),
+  // matching the behaviour of manual edits in readTable().
+  parsed.mappings = parsed.mappings.map(m => ({ ...m, from: String(m.from).toLowerCase() }));
+
   const obj = { [STORAGE_KEYS[activeTab]]: parsed };
   await localSet(obj);
   renderTable(parsed);
